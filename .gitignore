@@ -45,3 +45,8 @@ next-env.d.ts
 
 # private source material (CV with personal contacts)
 info/
+
+# personal agent notes (kept local only)
+CLAUDE.md
+documentation/
+.claude/
