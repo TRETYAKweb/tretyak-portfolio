@@ -1,0 +1,152 @@
+@import "tailwindcss";
+
+/* Design tokens — from tretyak-design-creo.webflow.io */
+@theme {
+  --color-black: #000;
+  --color-white: #fff;
+  --color-accent-50: #fff5ec;
+  --color-accent-100: #ffe8d3;
+  --color-accent-200: #ffcea5;
+  --color-accent-300: #ffab6d;
+  --color-accent-400: #ff7d32;
+  --color-accent-500: #ff590a;
+  --color-accent-600: #fd4100;
+  --color-accent-700: #cc2c02;
+  --color-accent-800: #a1240b;
+  --color-accent-900: #82200c;
+  --color-accent-950: #460d04;
+  --color-bg-secondary: #0c0d0e;
+  --color-dark-100: #111214;
+  --color-dark-200: #222428;
+  --color-dark-300: #383838;
+  --color-dark-500: #515151;
+  --color-dark-600: #646464;
+  --color-dark-700: #777;
+  --color-dark-800: #888889;
+  --color-border-200: #2a2a2b;
+  --color-border-300: #383838;
+
+  --font-sans: var(--font-manrope), sans-serif;
+}
+
+:root {
+  --spacing-gutter: 2.91rem;
+}
+
+/* Fluid root font-size — same curve as the Webflow project */
+:root {
+  --font-from: 16;
+  --font-to: 20.99;
+  --vw-from: calc(1440 / 100);
+  --vw-to: calc(1889 / 100);
+  --coefficient: calc((var(--font-to) - var(--font-from)) / (var(--vw-to) - var(--vw-from)));
+  --base: calc((var(--font-from) - var(--vw-from) * var(--coefficient)) / 16);
+
+  /* Theme that flips when the accent stage takes over */
+  --line: rgb(255 255 255 / 0.07);
+  --marker: var(--color-accent-600);
+  --fg: var(--color-white);
+  --fg-muted: var(--color-dark-800);
+}
+@media screen and (max-width: 767px) {
+  :root { --spacing-gutter: 1.1rem; }
+}
+html {
+  font-size: calc(var(--base) * 1rem + var(--coefficient) * 1vw);
+}
+@media screen and (max-width: 1440px) {
+  :root { --font-from: 11.01; --font-to: 16; --vw-from: calc(991 / 100); --vw-to: calc(1440 / 100); }
+}
+@media screen and (max-width: 991px) {
+  :root { --font-from: 16; --font-to: 18.87; --vw-from: calc(840 / 100); --vw-to: calc(991 / 100); }
+}
+@media screen and (max-width: 840px) {
+  :root { --font-from: 9.12; --font-to: 16; --vw-from: calc(479 / 100); --vw-to: calc(840 / 100); }
+}
+@media screen and (max-width: 479px) {
+  :root { --font-from: 16; --font-to: 20.16; --vw-from: calc(380 / 100); --vw-to: calc(479 / 100); }
+}
+@media screen and (max-width: 380px) {
+  :root { --font-from: 0; --font-to: 16; --vw-from: calc(1 / 100); --vw-to: calc(380 / 100); }
+}
+
+html[data-stage="accent"] {
+  --line: rgb(0 0 0 / 0.1);
+  --marker: var(--color-black);
+  --fg: var(--color-black);
+  --fg-muted: rgb(0 0 0 / 0.55);
+}
+
+body {
+  background: var(--color-black);
+  color: var(--color-white);
+  font-family: var(--font-sans);
+  font-size: 0.94rem;
+  font-weight: 500;
+  line-height: 138%;
+}
+
+::selection {
+  background: var(--color-accent-600);
+  color: var(--color-black);
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+
+@layer components {
+  .container-x {
+    padding-inline: var(--spacing-gutter);
+  }
+
+  /* Display type — Webflow h1 / .title */
+  .display {
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 0.9;
+  }
+
+  /* Small uppercase meta labels */
+  .label {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  /* Scrambled glyph sits on top of the invisible real char so layout never jumps */
+  .scr {
+    position: relative;
+  }
+  .scr > span + span {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+
+  /* Cut corner card (bottom-right bevel + notch on the left edge) */
+  .cut-card {
+    clip-path: polygon(
+      0 0,
+      100% 0,
+      100% calc(100% - 0.75rem),
+      calc(100% - 0.75rem) 100%,
+      0 100%,
+      0 54%,
+      0.6rem calc(54% - 0.6rem),
+      0.6rem 1.9rem,
+      0 1.3rem
+    );
+  }
+
+  .tag {
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 0.55rem), calc(100% - 0.55rem) 100%, 0 100%);
+  }
+}
