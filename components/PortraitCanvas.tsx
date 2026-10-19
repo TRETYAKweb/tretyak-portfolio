@@ -3,13 +3,14 @@
 import { useEffect, useImperativeHandle, useRef } from "react";
 
 export type PortraitHandle = {
-  /** 0 = clean halftone, 1 = full RGB split + slice glitch */
+  /** 0 = clean RGB mask, 1 = full RGB split + slice glitch */
   setGlitch: (amount: number) => void;
 };
 
 const SRC = "/img/me.png";
 
-type Caches = { white: HTMLCanvasElement; channels: HTMLCanvasElement[]; step: number };
+/** `base` = full RGB mask; `channels` = the same mask split into its R, G and B stripes (for the glitch). */
+type Caches = { base: HTMLCanvasElement; channels: HTMLCanvasElement[]; step: number };
 
 function makeCanvas(w: number, h: number) {
   const c = document.createElement("canvas");
@@ -18,11 +19,23 @@ function makeCanvas(w: number, h: number) {
   return c;
 }
 
-/** Turns the photo into a white dot halftone and pre-tints R/G/B copies for the glitch. */
+/** Tone curve. The mask lights a third of each cell, so the gain makes up for it. */
+const tone = (lum: number) => Math.min(1, Math.pow(lum, 1.1) * 1.6);
+/** How much a stripe also lights the other two channels: softer, less saturated colour. */
+const BLEED = 0.35;
+
+/**
+ * Renders the photo as a screen close-up: every cell is three vertical
+ * R/G/B subpixel stripes lit by the photo's luminance, with a dark gap
+ * between rows. From a distance it reads as a soft grey image.
+ */
 function buildCaches(img: HTMLImageElement, w: number, h: number, dpr: number): Caches {
-  const step = Math.max(4, Math.round(4 * dpr));
-  const cols = Math.ceil(w / step);
-  const rows = Math.ceil(h / step);
+  const sub = Math.max(1, Math.round(dpr)); // one subpixel stripe ≈ 1 CSS px
+  const step = sub * 3; // cell = R + G + B
+  const gap = Math.max(1, Math.round(dpr / 2)); // dark line between rows
+  // Sample at subpixel resolution: the mask only tints, the photo keeps its detail
+  const cols = Math.ceil(w / sub);
+  const rows = Math.ceil(h / sub);
 
   // Fit by height, anchored to the bottom, centred horizontally
   const scale = (h * 1.02) / img.height;
@@ -33,41 +46,41 @@ function buildCaches(img: HTMLImageElement, w: number, h: number, dpr: number): 
 
   const sample = makeCanvas(cols, rows);
   const sctx = sample.getContext("2d", { willReadFrequently: true })!;
-  sctx.drawImage(img, dx / step, dy / step, dw / step, dh / step);
+  sctx.imageSmoothingQuality = "high";
+  sctx.drawImage(img, dx / sub, dy / sub, dw / sub, dh / sub);
   const { data } = sctx.getImageData(0, 0, cols, rows);
 
-  const white = makeCanvas(w, h);
-  const wctx = white.getContext("2d")!;
-  wctx.fillStyle = "#fff";
-  wctx.beginPath();
-  for (let y = 0; y < rows; y++) {
-    for (let x = 0; x < cols; x++) {
-      const i = (y * cols + x) * 4;
+  const channels = [0, 1, 2].map(() => makeCanvas(w, h));
+  const out = channels.map((c) => c.getContext("2d")!.createImageData(w, h));
+
+  for (let y = 0; y < h; y++) {
+    if (y % step >= step - gap) continue;
+    const row = Math.floor(y / sub) * cols;
+    for (let x = 0; x < w; x++) {
+      const i = (row + Math.floor(x / sub)) * 4;
       const a = data[i + 3] / 255;
-      if (a < 0.4) continue;
+      if (a < 0.02) continue;
       const lum = (0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2]) / 255;
-      const v = Math.min(1, Math.pow(lum, 0.75) * 1.35);
-      // Keep a faint dot even in the darkest areas so the silhouette reads
-      const r = (step / 2) * Math.max(0.16 * a, v);
-      const cx = x * step + step / 2;
-      const cy = y * step + step / 2;
-      wctx.moveTo(cx + r, cy);
-      wctx.arc(cx, cy, r, 0, Math.PI * 2);
+      // Faint glow even in the darkest areas so the silhouette reads; alpha softens the edges
+      const v = Math.max(0.1, tone(lum)) * a * 255;
+      const k = Math.floor((x % step) / sub);
+      const o = (y * w + x) * 4;
+      for (let j = 0; j < 3; j++) {
+        out[j].data[o + j] = j === k ? v : v * BLEED;
+        out[j].data[o + 3] = 255;
+      }
     }
   }
-  wctx.fill();
 
-  const channels = ["#f00", "#0f0", "#00f"].map((color) => {
-    const c = makeCanvas(w, h);
-    const ctx = c.getContext("2d")!;
-    ctx.drawImage(white, 0, 0);
-    ctx.globalCompositeOperation = "source-in";
-    ctx.fillStyle = color;
-    ctx.fillRect(0, 0, w, h);
-    return c;
+  const base = makeCanvas(w, h);
+  const bctx = base.getContext("2d")!;
+  bctx.globalCompositeOperation = "lighter";
+  channels.forEach((c, k) => {
+    c.getContext("2d")!.putImageData(out[k], 0, 0);
+    bctx.drawImage(c, 0, 0);
   });
 
-  return { white, channels, step };
+  return { base, channels, step };
 }
 
 export default function PortraitCanvas({
@@ -93,7 +106,7 @@ export default function PortraitCanvas({
     ctx.clearRect(0, 0, w, h);
 
     if (g < 0.01) {
-      ctx.drawImage(c.white, 0, 0);
+      ctx.drawImage(c.base, 0, 0);
       return;
     }
 
@@ -111,7 +124,7 @@ export default function PortraitCanvas({
       const sy = Math.random() * (h - sh);
       const off = (Math.random() - 0.5) * g * c.step * 14;
       ctx.clearRect(0, sy, w, sh);
-      ctx.drawImage(c.white, 0, sy, w, sh, off, sy, w, sh);
+      ctx.drawImage(c.base, 0, sy, w, sh, off, sy, w, sh);
     }
   };
 
