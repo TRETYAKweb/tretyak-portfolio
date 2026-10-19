@@ -83,6 +83,7 @@ export default function Hero() {
 
     const arrow = section.querySelector<HTMLElement>("[data-quote-arrow]");
     const fades = section.querySelectorAll<HTMLElement>("[data-fade]");
+    const hint = section.querySelector<HTMLElement>("[data-scroll-hint]");
     const mobile = window.matchMedia("(max-width: 767px)");
     const state = { intro: reduced ? 1 : 0, scroll: 0 };
 
@@ -101,6 +102,12 @@ export default function Hero() {
       });
       const introVisible = clamp01(Math.min(state.intro, 1 - out) * 2.5);
       fades.forEach((el) => (el.style.opacity = String(introVisible)));
+      // Scroll hint leaves first: fades and slides down on the very first scroll
+      const hintOut = range(p, 0.003, 0.04);
+      if (hint) {
+        hint.style.opacity = String(Math.min(introVisible, 1 - hintOut));
+        hint.style.transform = `translateY(${hintOut * 1.5}rem)`;
+      }
       stagger(groups.manifesto, 0.15, 0.14, 0.12, p);
       stagger(groups.quote, 0.42, 0.12, 0.1, p);
       if (arrow) arrow.style.opacity = p > 0.47 ? "1" : "0";
@@ -126,6 +133,15 @@ export default function Hero() {
       onUpdate: render,
     });
 
+    const bob = gsap.to(section.querySelector("[data-scroll-arrow]"), {
+      y: 6,
+      duration: 0.6,
+      ease: "steps(3)",
+      repeat: -1,
+      yoyo: true,
+      paused: reduced,
+    });
+
     const st = ScrollTrigger.create({
       trigger: section,
       start: "top top",
@@ -138,6 +154,7 @@ export default function Hero() {
 
     return () => {
       intro.kill();
+      bob.kill();
       st.kill();
       delete document.documentElement.dataset.stage;
     };
@@ -195,28 +212,31 @@ export default function Hero() {
 
         {/* Name */}
         <div className="container-x absolute inset-x-0 bottom-[5vh] grid grid-cols-2 md:grid-cols-5">
-          <div className="col-span-1 flex flex-col justify-between pb-6 max-md:col-span-2 max-md:pb-4">
-            <span data-fade className="tag self-start bg-accent-600 px-3 py-1.5 text-[0.72rem] font-bold tracking-[0.14em] text-black uppercase">
+          {/* Tag: top edge = top of "Yevhenii", left edge = left of "Tretyak" */}
+          <div className="col-span-1 self-start md:mt-[0.75rem] max-md:col-span-2 max-md:pb-4">
+            <span data-fade className="tag inline-block bg-accent-600 px-3 py-1.5 text-[0.72rem] font-bold tracking-[0.14em] text-black uppercase">
               <S group="intro" tint="dark">
                 UI/UX Designer & Webflow Dev
               </S>
             </span>
-            <span className="label mt-auto text-dark-800 max-md:hidden">
-              <S group="intro">A designer</S>
-            </span>
           </div>
           <h1 className="sr-only">Yevhenii Tretyak — UI/UX Designer & Webflow Developer</h1>
-          <p aria-hidden className="display col-span-4 text-[7.2rem] uppercase max-md:col-span-2 max-md:text-[3.9rem]">
-            <S group="intro">Yevhenii</S>
-          </p>
-          <div className="col-span-5 flex items-end gap-10 max-md:col-span-2">
-            <span className="display text-[7.2rem] uppercase max-md:text-[3.9rem]" aria-hidden>
-              <S group="intro">Tretyak</S>
-            </span>
-            <span className="label mb-3 text-dark-800 max-md:hidden">
-              <S group="intro">Who ships in Webflow</S>
+          <div className="col-span-4 max-md:col-span-2">
+            {/* Label: right edge = right of "Yevhenii", baseline = baseline of "Tretyak" (one line below) */}
+            <span aria-hidden className="display relative block w-fit text-[7.2rem] uppercase max-md:text-[3.9rem]">
+              <S group="intro">Yevhenii</S>
+              <span className="label absolute right-0 -bottom-[6.18rem] text-dark-800 max-md:hidden">
+                <S group="intro">Who ships in Webflow</S>
+              </span>
             </span>
           </div>
+          <span aria-hidden className="display col-span-3 self-baseline text-[7.2rem] uppercase max-md:col-span-2 max-md:text-[3.9rem]">
+            <S group="intro">Tretyak</S>
+          </span>
+          {/* Year: left edge = grid line under "Kyiv, UA", baseline = baseline of "Tretyak" */}
+          <span aria-hidden className="display col-start-4 self-baseline text-[2.4rem] max-md:hidden">
+            <S group="intro">96’</S>
+          </span>
         </div>
 
         {/* Manifesto */}
@@ -254,9 +274,11 @@ export default function Hero() {
         </div>
 
         {/* Scroll hint */}
-        <div className="container-x pointer-events-none absolute right-0 bottom-[5vh] flex flex-col items-center gap-3 max-md:hidden">
-          <span className="label text-dark-700 [writing-mode:vertical-rl]">Scroll down</span>
-          <span className="flex flex-col text-accent-600">
+        <div data-scroll-hint className="container-x pointer-events-none absolute right-0 bottom-[5vh] flex flex-col items-center gap-3 max-md:hidden">
+          <span className="label text-dark-700 [writing-mode:vertical-rl]">
+            <S group="intro">Scroll down</S>
+          </span>
+          <span data-scroll-arrow className="flex flex-col text-accent-600">
             <PixelArrow className="h-2 w-3 rotate-90" />
           </span>
         </div>
