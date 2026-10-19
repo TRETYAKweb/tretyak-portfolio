@@ -1,14 +1,43 @@
-const MARKERS: Record<number, string[]> = {
-  0: ["24%"],
-  2: ["52%"],
-  4: ["31%"],
-  5: ["68%"],
+"use client";
+
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
+
+/** Line index → markers: start position and drift (px per px of scroll, sign = direction). */
+const MARKERS: Record<number, { top: string; speed: number }[]> = {
+  0: [{ top: "24%", speed: 0.03 }],
+  2: [{ top: "52%", speed: -0.035 }],
+  4: [{ top: "31%", speed: 0.025 }],
+  5: [{ top: "68%", speed: -0.03 }],
 };
 
 /** Fixed 5-column guide grid with small markers, shared by every section. */
 export default function GridLines() {
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  // Markers drift along their lines with the scroll, neighbours in opposite directions
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const markers = [...rootRef.current!.querySelectorAll<HTMLElement>("[data-speed]")].map((el) => ({
+      el,
+      speed: Number(el.dataset.speed),
+    }));
+    const st = ScrollTrigger.create({
+      start: 0,
+      end: "max",
+      onUpdate: (self) => {
+        const y = self.scroll();
+        markers.forEach(({ el, speed }) => (el.style.transform = `translateY(${y * speed}px)`));
+      },
+    });
+    return () => st.kill();
+  }, []);
+
   return (
-    <div aria-hidden className="container-x pointer-events-none fixed inset-0 z-30">
+    <div ref={rootRef} aria-hidden className="container-x pointer-events-none fixed inset-0 z-30">
       <div className="relative h-full">
         {/* Desktop: 5 columns */}
         {Array.from({ length: 6 }, (_, i) => (
@@ -17,9 +46,10 @@ export default function GridLines() {
             className="absolute top-0 h-full w-px bg-(--line) transition-colors duration-500 max-md:hidden"
             style={{ left: `${i * 20}%` }}
           >
-            {MARKERS[i]?.map((top) => (
+            {MARKERS[i]?.map(({ top, speed }) => (
               <i
                 key={top}
+                data-speed={speed}
                 className="absolute -left-px h-1.5 w-[3px] bg-(--marker) transition-colors duration-500"
                 style={{ top }}
               />
