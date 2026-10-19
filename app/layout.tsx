@@ -18,7 +18,8 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${manrope.variable} antialiased`}>
-      <body>
+      {/* Extensions (e.g. ColorZilla) inject attributes on <body> before hydration */}
+      <body suppressHydrationWarning>
         <SmoothScroll />
         {children}
       </body>
