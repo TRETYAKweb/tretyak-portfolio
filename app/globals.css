@@ -45,6 +45,7 @@
   /* Theme that flips when the accent stage takes over */
   --line: rgb(255 255 255 / 0.07);
   --marker: var(--color-accent-600);
+  --dot: rgb(255 255 255 / 0.22);
   --fg: var(--color-white);
   --fg-muted: var(--color-dark-800);
 }
