@@ -42,6 +42,11 @@ const MANIFESTO: { words: string[]; indent?: boolean }[] = [
 
 const DARK_TINTS = ["text-black/40", "text-black", "text-accent-950"];
 
+/** Idle portrait glitch: a short burst every ~GLITCH_EVERY seconds (± GLITCH_JITTER). */
+const GLITCH_EVERY = 8;
+const GLITCH_JITTER = 1.5;
+const GLITCH_FIRST = 3;
+
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 const range = (p: number, from: number, to: number) => clamp01((p - from) / (to - from));
 
@@ -112,8 +117,6 @@ export default function Hero() {
       stagger(groups.quote, 0.42, 0.12, 0.1, p);
       if (arrow) arrow.style.opacity = p > 0.47 ? "1" : "0";
 
-      const glitch = Math.max(Math.sin(range(p, 0.42, 0.62) * Math.PI) * 0.45, range(p, 0.68, 0.84));
-      portrait.current?.setGlitch(glitch);
       // On mobile the manifesto sits on top of the face — dim the photo behind it
       if (portraitWrap.current && mobile.matches)
         portraitWrap.current.style.opacity = String(1 - 0.65 * range(p, 0.1, 0.18));
@@ -142,6 +145,26 @@ export default function Hero() {
       paused: reduced,
     });
 
+    // Looping glitch burst on the portrait, independent of scroll
+    const glitch = { v: 0 };
+    const applyGlitch = () => portrait.current?.setGlitch(glitch.v);
+    let burst: gsap.core.Timeline | undefined;
+    const nextDelay = () => gsap.utils.random(GLITCH_EVERY - GLITCH_JITTER, GLITCH_EVERY + GLITCH_JITTER);
+    const scheduleBurst = (delay: number) => {
+      burst = gsap
+        .timeline({ delay, onComplete: () => scheduleBurst(nextDelay()) })
+        .to(glitch, { v: 0.5, duration: 0.12, ease: "steps(3)", onUpdate: applyGlitch })
+        // Hold with flicker: random strength every frame
+        .to(glitch, {
+          v: 0.4,
+          duration: 0.6,
+          ease: "none",
+          onUpdate: () => portrait.current?.setGlitch(glitch.v * gsap.utils.random(0.5, 1.2)),
+        })
+        .to(glitch, { v: 0, duration: 0.18, ease: "steps(3)", onUpdate: applyGlitch });
+    };
+    if (!reduced) scheduleBurst(GLITCH_FIRST);
+
     const st = ScrollTrigger.create({
       trigger: section,
       start: "top top",
@@ -155,6 +178,7 @@ export default function Hero() {
     return () => {
       intro.kill();
       bob.kill();
+      burst?.kill();
       st.kill();
       delete document.documentElement.dataset.stage;
     };
