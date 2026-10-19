@@ -68,7 +68,6 @@ export default function Hero() {
   const stageRef = useRef<HTMLDivElement>(null);
   const portrait = useRef<PortraitHandle>(null);
   const pixels = useRef<PixelHandle>(null);
-  const ringRef = useRef<SVGCircleElement>(null);
   const portraitWrap = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -113,7 +112,6 @@ export default function Hero() {
         portraitWrap.current.style.opacity = String(1 - 0.65 * range(p, 0.1, 0.18));
       pixels.current?.setProgress(range(p, 0.7, 0.97));
 
-      if (ringRef.current) ringRef.current.style.strokeDashoffset = String(1 - p);
       document.documentElement.dataset.stage = p > 0.9 ? "accent" : "";
     };
 
@@ -262,26 +260,6 @@ export default function Hero() {
             <PixelArrow className="h-2 w-3 rotate-90" />
           </span>
         </div>
-
-        <svg
-          viewBox="0 0 40 40"
-          aria-hidden
-          className="pointer-events-none absolute -bottom-5 left-[54%] size-10 -translate-x-1/2 -rotate-90 max-md:hidden"
-        >
-          <circle cx="20" cy="20" r="18" fill="none" stroke="rgb(255 255 255 / 0.15)" strokeWidth="1" />
-          <circle
-            ref={ringRef}
-            cx="20"
-            cy="20"
-            r="18"
-            fill="none"
-            stroke="var(--color-accent-600)"
-            strokeWidth="1"
-            pathLength={1}
-            strokeDasharray="1"
-            strokeDashoffset="1"
-          />
-        </svg>
 
         <PixelTransition ref={pixels} />
       </div>
