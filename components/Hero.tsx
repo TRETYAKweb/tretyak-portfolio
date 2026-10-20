@@ -48,6 +48,11 @@ const GLITCH_EVERY = 8;
 const GLITCH_JITTER = 1.5;
 const GLITCH_FIRST = 3;
 
+/** Manifesto: scroll point that starts it, and how long it assembles / scatters (s). */
+const MANIFESTO_AT = 0.16;
+const MANIFESTO_IN = 1.6;
+const MANIFESTO_OUT = 0.6;
+
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 const range = (p: number, from: number, to: number) => clamp01((p - from) / (to - from));
 
@@ -91,7 +96,20 @@ export default function Hero() {
     const fades = section.querySelectorAll<HTMLElement>("[data-fade]");
     const hint = section.querySelector<HTMLElement>("[data-scroll-hint]");
     const narrow = window.matchMedia("(max-width: 991px)");
-    const state = { intro: reduced ? 1 : 0, scroll: 0 };
+    const state = { intro: reduced ? 1 : 0, scroll: 0, manifesto: 0 };
+    // Manifesto plays on its own once the intro has scattered (like the reference), not with the scroll
+    let manifestoOn = false;
+    let manifestoTween: gsap.core.Tween | undefined;
+    const toggleManifesto = (on: boolean) => {
+      manifestoOn = on;
+      manifestoTween?.kill();
+      manifestoTween = gsap.to(state, {
+        manifesto: on ? 1 : 0,
+        duration: reduced ? 0 : on ? MANIFESTO_IN : MANIFESTO_OUT,
+        ease: "none",
+        onUpdate: render,
+      });
+    };
 
     const render = () => {
       const p = state.scroll;
@@ -114,9 +132,14 @@ export default function Hero() {
         hint.style.opacity = String(Math.min(introVisible, 1 - hintOut));
         hint.style.transform = `translateY(${hintOut * 1.5}rem)`;
       }
-      stagger(groups.manifesto, 0.15, 0.14, 0.12, p);
+      if (p > MANIFESTO_AT !== manifestoOn) toggleManifesto(!manifestoOn);
+      stagger(groups.manifesto, 0, 0.6, 0.4, state.manifesto);
       stagger(groups.quote, 0.42, 0.12, 0.1, p);
-      if (arrow) arrow.style.opacity = p > 0.47 ? "1" : "0";
+      // Arrow shows up after "Just one" and rides the scroll until it stops under the end of "pixel”"
+      if (arrow) {
+        arrow.style.opacity = p > 0.47 ? "1" : "0";
+        arrow.style.setProperty("--t", String(range(p, 0.52, 0.7)));
+      }
 
       // Below desktop the manifesto sits on top of the face — dim the photo behind it
       if (portraitWrap.current && narrow.matches)
@@ -182,6 +205,7 @@ export default function Hero() {
     return () => {
       unwait();
       intro.kill();
+      manifestoTween?.kill();
       bob.kill();
       burst?.kill();
       st.kill();
@@ -275,8 +299,11 @@ export default function Hero() {
         </div>
 
         {/* Manifesto */}
-        <div className="container-x pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 max-sm:top-[42%] sm:max-lg:top-[45%]">
-          <p className="display w-[calc(40%+1px)] text-[3.45rem] uppercase max-sm:w-full max-sm:text-[1.95rem] sm:max-lg:w-[76%] sm:max-lg:text-[3.6rem]">
+        {/* Tablet: full width like the reference (10.1em = container at 4.6rem). Size is capped by height so landscape
+            tablets keep it off the quote; width in em shrinks with it, otherwise the words drift apart.
+            Mobile: right under the header */}
+        <div className="container-x pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 max-sm:top-[13%] max-sm:translate-y-0 sm:max-lg:top-[45%]">
+          <p className="display w-[calc(40%+1px)] text-[3.45rem] uppercase max-sm:w-full max-sm:text-[1.95rem] sm:max-lg:w-[10.1em] sm:max-lg:max-w-full sm:max-lg:text-[min(4.6rem,6.5svh)]">
             {MANIFESTO.map((line, i) => (
               <span key={i} className={`flex justify-between gap-[0.3em] ${line.indent ? "pl-[18%]" : ""}`}>
                 {line.words.map((word) => (
@@ -293,18 +320,24 @@ export default function Hero() {
         <div className="container-x pointer-events-none absolute inset-x-0 bottom-[6vh] flex justify-end max-sm:bottom-[8vh] sm:max-lg:bottom-[7vh]">
           <p className="display flex items-end gap-[0.25em] text-[3.45rem] whitespace-nowrap uppercase max-sm:text-[1.75rem] sm:max-lg:text-[3rem]">
             <S group="quote">“Just one</S>
-            <span data-quote-arrow className="mb-[0.08em] opacity-0">
-              <S group="quote" className="sr-only">
-                →
+            {/* Arrow track: from after "Just one" to the right edge of "pixel”"; --t (0–1) is set from the scroll */}
+            <span className="relative flex items-end gap-[0.25em] pl-[0.95em]">
+              <span
+                data-quote-arrow
+                className="absolute bottom-[0.08em] left-[calc((100%-0.7em)*var(--t,0))] opacity-0"
+              >
+                <S group="quote" className="sr-only">
+                  →
+                </S>
+                <PixelArrow className="block h-[0.5em] w-[0.7em] text-accent-600" />
+              </span>
+              <S group="quote" className="mb-[0.9em]">
+                more
               </S>
-              <PixelArrow className="h-[0.5em] w-[0.7em] text-accent-600" />
+              <S group="quote" className="mb-[1.8em] text-accent-600">
+                pixel”
+              </S>
             </span>
-            <S group="quote" className="mb-[0.9em]">
-              more
-            </S>
-            <S group="quote" className="mb-[1.8em] text-accent-600">
-              pixel”
-            </S>
           </p>
         </div>
 
