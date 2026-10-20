@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { whenBooted } from "@/lib/boot";
 import { createScrambler, type Scrambler } from "@/lib/scramble";
 import PortraitCanvas, { type PortraitHandle } from "./PortraitCanvas";
 import PixelTransition, { type PixelHandle } from "./PixelTransition";
@@ -128,13 +129,16 @@ export default function Hero() {
     render();
     stage.style.visibility = "visible";
 
+    // Intro waits until the preloader / reveal has uncovered the screen
     const intro = gsap.to(state, {
       intro: 1,
       duration: reduced ? 0 : 1.6,
       delay: 0.2,
       ease: "power2.out",
       onUpdate: render,
+      paused: true,
     });
+    const unwait = whenBooted(() => intro.play());
 
     const bob = gsap.to(section.querySelector("[data-scroll-arrow]"), {
       y: 6,
@@ -176,6 +180,7 @@ export default function Hero() {
     });
 
     return () => {
+      unwait();
       intro.kill();
       bob.kill();
       burst?.kill();

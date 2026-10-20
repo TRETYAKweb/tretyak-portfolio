@@ -124,6 +124,31 @@ html.lenis body {
   overflow: clip;
 }
 
+/* Boot (components/Boot.tsx): a solid accent cover from the first paint until the reveal
+   canvas takes over; the preloader only on the session's first visit (`data-preload`) */
+.boot-cover {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  background: var(--color-accent-600);
+  /* Swallows taps and swipes before hydration (Boot.tsx does the same) */
+  touch-action: none;
+}
+/* No scrolling under the cover; after hydration Boot keeps it locked until the reveal releases */
+:root:not([data-booted]) {
+  overflow: hidden;
+}
+:root[data-booted] .boot-cover,
+:root:not([data-preload]) .preloader {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .boot-cover,
+  .boot-canvas {
+    display: none;
+  }
+}
+
 @layer components {
   .container-x {
     padding-inline: var(--spacing-gutter);

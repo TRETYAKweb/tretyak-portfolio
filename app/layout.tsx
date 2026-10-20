@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
+import Boot from "@/components/Boot";
+import InlineScript from "@/components/InlineScript";
 import SmoothScroll from "@/components/SmoothScroll";
+import { BOOT_SCRIPT } from "@/lib/boot";
 import "./globals.css";
 
 const manrope = Manrope({
@@ -17,9 +20,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${manrope.variable} antialiased`}>
+    // The boot script sets data-preload / data-booted on <html> before hydration
+    <html lang="en" className={`${manrope.variable} antialiased`} suppressHydrationWarning>
       {/* Extensions (e.g. ColorZilla) inject attributes on <body> before hydration */}
       <body suppressHydrationWarning>
+        <InlineScript html={BOOT_SCRIPT} />
+        <div className="boot-cover" aria-hidden />
+        <noscript>
+          <style>{".boot-cover{display:none}"}</style>
+        </noscript>
+        <Boot />
         <SmoothScroll />
         {children}
       </body>

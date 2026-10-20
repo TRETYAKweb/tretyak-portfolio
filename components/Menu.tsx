@@ -165,14 +165,15 @@ export default function Menu({
   const closeBtn = useRef<HTMLButtonElement>(null);
   const wasOpen = useRef(false);
 
-  // Freeze page scroll while open
+  // Freeze page scroll while open. Unfreeze only what the menu froze itself:
+  // on mount it would otherwise undo the boot lock (components/Boot.tsx)
   useEffect(() => {
     const lenis = getLenis();
     const html = document.documentElement;
     if (open) {
       if (lenis) lenis.stop();
       else html.style.overflow = "hidden";
-    } else {
+    } else if (wasOpen.current) {
       lenis?.start();
       html.style.overflow = "";
     }
