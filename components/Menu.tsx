@@ -9,7 +9,6 @@ import { createScrambler, type Scrambler } from "@/lib/scramble";
 
 /** Landing anchors; sections get these ids as they're built */
 const NAV = [
-  { label: "Home", href: "#top" },
   { label: "About", href: "#about" },
   { label: "Work", href: "#work" },
   { label: "Contact", href: "#contact" },
