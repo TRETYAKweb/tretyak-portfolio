@@ -226,7 +226,7 @@ export default function Hero() {
           </div>
 
           {/* Bio */}
-          <p className="col-span-2 row-start-2 mt-[5rem] indent-[50%] text-[1.15rem] leading-[1.45] text-dark-800 max-sm:mt-8 max-sm:indent-0 max-sm:text-base sm:max-lg:mt-12 sm:max-lg:w-[75%] sm:max-lg:indent-[33%] sm:max-lg:text-[1.35rem]">
+          <p className="col-span-2 row-start-2 mt-[5rem] indent-[50%] text-[1.15rem] leading-[1.45] text-dark-800 max-sm:mt-8 max-sm:indent-0 max-sm:text-base sm:max-lg:col-span-1 sm:max-lg:mt-12 sm:max-lg:pr-6 sm:max-lg:indent-[25%] sm:max-lg:text-[max(13px,1.15rem)]">
             <S group="intro">I design interfaces people </S>
             <S group="intro" className="text-accent-600 italic">
               enjoy
