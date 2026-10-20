@@ -48,6 +48,8 @@
   --dot: rgb(255 255 255 / 0.22);
   --fg: var(--color-white);
   --fg-muted: var(--color-dark-800);
+  --btn-bg: rgb(255 255 255 / 0.1);
+  --btn-bg-hover: var(--color-accent-950);
 }
 @media screen and (max-width: 767px) {
   :root { --spacing-gutter: 1.1rem; }
@@ -76,6 +78,17 @@ html[data-stage="accent"] {
   --marker: var(--color-black);
   --fg: var(--color-black);
   --fg-muted: rgb(0 0 0 / 0.55);
+  --btn-bg: rgb(0 0 0 / 0.1);
+  --btn-bg-hover: var(--color-black);
+}
+
+/* Keeps a block dark (e.g. the menu panel) whatever the stage is */
+.theme-dark {
+  --marker: var(--color-accent-600);
+  --fg: var(--color-white);
+  --fg-muted: var(--color-dark-700);
+  --btn-bg: rgb(255 255 255 / 0.06);
+  --btn-bg-hover: var(--color-accent-950);
 }
 
 body {
@@ -145,6 +158,26 @@ html.lenis body {
       0.6rem 1.9rem,
       0 1.3rem
     );
+  }
+
+  /* Menu panel: all four corners bevelled */
+  .chamfer {
+    --c: 1.0625rem;
+    clip-path: polygon(
+      var(--c) 0,
+      calc(100% - var(--c)) 0,
+      100% var(--c),
+      100% calc(100% - var(--c)),
+      calc(100% - var(--c)) 100%,
+      var(--c) 100%,
+      0 calc(100% - var(--c)),
+      0 var(--c)
+    );
+  }
+
+  /* Menu item highlight: small top-left bevel, big bottom-right bevel */
+  .chamfer-item {
+    clip-path: polygon(0 0.25rem, 0.25rem 0, 100% 0, 100% calc(100% - 0.625rem), calc(100% - 0.625rem) 100%, 0 100%);
   }
 
   .tag {

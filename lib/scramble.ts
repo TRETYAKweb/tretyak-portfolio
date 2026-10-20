@@ -20,11 +20,16 @@ export type Scrambler = {
  * Real chars stay in the DOM (invisible) so the layout never jumps.
  * Must be created on the client (uses Math.random).
  */
-export function createScrambler(el: HTMLElement, opts: { tints?: string[] } = {}): Scrambler {
+export function createScrambler(
+  el: HTMLElement,
+  /** `solid`: chars that haven't started yet show a glyph instead of being hidden (hover scramble) */
+  opts: { tints?: string[]; solid?: boolean } = {},
+): Scrambler {
   const text = el.dataset.text ?? el.textContent ?? "";
   const chars = [...text];
   const starts = chars.map(() => Math.random() * (1 - WINDOW));
   const tints = opts.tints ?? TINTS;
+  const solid = opts.solid ?? false;
   let last = -1;
 
   const set = (p: number) => {
@@ -46,7 +51,7 @@ export function createScrambler(el: HTMLElement, opts: { tints?: string[] } = {}
       }
       const local = (progress - starts[i]) / WINDOW;
       if (local >= 1) html += escape(ch);
-      else if (local <= 0) html += `<span class="invisible">${escape(ch)}</span>`;
+      else if (local <= 0 && !solid) html += `<span class="invisible">${escape(ch)}</span>`;
       else
         html += `<span class="scr"><span class="invisible">${escape(ch)}</span><span class="${pick(
           tints,
