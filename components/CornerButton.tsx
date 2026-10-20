@@ -53,9 +53,10 @@ export default function CornerButton({ children, className = "", ...props }: Com
       {...props}
     >
       <span className="absolute inset-0 bg-(--btn-bg) backdrop-blur-sm transition-colors duration-200 group-hover:bg-(--btn-bg-hover) group-hover:duration-150" />
+      {/* The scramble rewrites these nodes mid-click; Chrome drops the click if mousedown hit a removed node */}
       <span
         ref={label}
-        className="relative text-(--fg) transition-colors duration-200 group-hover:text-accent-600 group-hover:duration-500 group-hover:ease-linear"
+        className="pointer-events-none relative text-(--fg) transition-colors duration-200 group-hover:text-accent-600 group-hover:duration-500 group-hover:ease-linear"
       >
         {children}
       </span>

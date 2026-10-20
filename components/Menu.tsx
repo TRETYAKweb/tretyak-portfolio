@@ -140,7 +140,10 @@ function SocialLink({ label, href, index }: { label: string; href: string; index
         onMouseLeave={onLeave}
         className="group label flex min-w-0 flex-1 items-center justify-between gap-1 text-dark-700 transition-colors duration-300 hover:text-white"
       >
-        <span ref={text}>{label}</span>
+        {/* Not a click target: the scramble swaps its nodes mid-click (see CornerButton) */}
+        <span ref={text} className="pointer-events-none">
+          {label}
+        </span>
         <Arrow />
       </a>
     </div>
