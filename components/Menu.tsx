@@ -128,7 +128,7 @@ function SocialLink({ label, href, index }: { label: string; href: string; index
 
   return (
     <div className="group/row flex items-center gap-5 max-md:gap-3">
-      <span className="label w-4 text-accent-600 opacity-20 transition-opacity duration-300 ease-out group-hover/row:opacity-100">
+      <span className="label shrink-0 text-accent-600 tabular-nums opacity-20 transition-opacity duration-300 ease-out group-hover/row:opacity-100">
         {String(index + 1).padStart(2, "0")}
       </span>
       <a
@@ -247,7 +247,7 @@ export default function Menu({
         role="dialog"
         aria-modal="true"
         aria-label="Menu"
-        className="chamfer absolute inset-x-(--spacing-gutter) top-[3.125rem] bottom-[3.125rem] flex max-h-[47.5rem] flex-col bg-border-200 will-change-transform md:left-auto md:w-[23.75rem]"
+        className="chamfer absolute inset-x-(--spacing-gutter) top-[3.125rem] bottom-[3.125rem] flex max-h-[47.5rem] flex-col bg-border-200 will-change-transform md:left-auto md:w-[max(23.75rem,320px)]"
         // Off-screen until opened; GSAP owns the transform from here (not Tailwind's `translate`)
         style={{ transform: "translateX(100vw)" }}
       >
