@@ -37,8 +37,8 @@ function buildCaches(img: HTMLImageElement, w: number, h: number, dpr: number): 
   const cols = Math.ceil(w / sub);
   const rows = Math.ceil(h / sub);
 
-  // Fit by height, anchored to the bottom, centred horizontally
-  const scale = (h * 1.02) / img.height;
+  // Fit by height, anchored to the bottom, centred horizontally; narrower if a tall window would crop the shoulders
+  const scale = Math.min((h * 1.02) / img.height, w / img.width);
   const dw = img.width * scale;
   const dh = img.height * scale;
   const dx = (w - dw) / 2;

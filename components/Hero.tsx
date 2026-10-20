@@ -190,7 +190,7 @@ export default function Hero() {
         <div ref={portraitWrap} className="absolute inset-0">
           <PortraitCanvas
             ref={portrait}
-            className="absolute bottom-0 left-[38%] h-[86%] w-[48%] mask-[linear-gradient(to_bottom,black_70%,transparent_98%)] max-sm:left-0 max-sm:h-[70%] max-sm:w-full max-sm:opacity-70 sm:max-lg:left-[22%] sm:max-lg:h-[78%] sm:max-lg:w-[78%]"
+            className="absolute bottom-0 left-[24%] h-[86%] w-[76%] mask-[linear-gradient(to_bottom,black_70%,transparent_98%)] max-sm:left-0 max-sm:h-[70%] max-sm:w-full max-sm:opacity-70 sm:max-lg:left-[22%] sm:max-lg:h-[78%] sm:max-lg:w-[78%]"
           />
         </div>
 
@@ -211,7 +211,7 @@ export default function Hero() {
           </div>
 
           {/* From UA */}
-          <div className="col-start-5 mt-[6.9rem] flex items-start justify-between max-sm:hidden sm:max-lg:col-start-2 sm:max-lg:justify-end sm:max-lg:gap-4">
+          <div className="col-start-5 mt-[6.9rem] flex items-start justify-between max-sm:hidden sm:max-lg:col-start-2 sm:max-lg:justify-end sm:max-lg:gap-8">
             <span className="label text-dark-800">
               <S group="intro">From</S>
             </span>
@@ -236,16 +236,18 @@ export default function Hero() {
 
         {/* Name */}
         <div className="container-x absolute inset-x-0 bottom-[5vh] grid grid-cols-2 lg:grid-cols-5">
-          {/* Tag: top edge = top of "Yevhenii", left edge = left of "Tretyak" */}
-          <div className="col-span-1 self-start max-lg:col-span-2 max-lg:pb-4 lg:mt-[0.75rem]">
-            <span data-fade className="tag inline-block bg-accent-600 px-3 py-1.5 text-label font-bold tracking-[0.14em] text-black uppercase">
+          {/* Tag: top edge = top of "Yevhenii", left edge = left of "Tretyak".
+              Below 1350 the 12px floor no longer fits it in one column with a gap, so it moves above "Yevhenii" */}
+          <div className="col-span-1 self-start max-[1349px]:col-span-full max-[1349px]:pb-4 min-[1350px]:mt-[0.75rem]">
+            <span data-fade className="tag inline-block bg-accent-600 px-2.5 py-1.5 text-label font-bold tracking-[0.1em] whitespace-nowrap text-black uppercase">
               <S group="intro" tint="dark">
                 UI/UX Designer & Webflow Dev
               </S>
             </span>
           </div>
           <h1 className="sr-only">Yevhenii Tretyak — UI/UX Designer & Webflow Developer</h1>
-          <div className="col-span-4 max-lg:col-span-2">
+          {/* Desktop: "Yevhenii" always starts on the second grid line, even when the tag sits above it */}
+          <div className="col-span-4 max-lg:col-span-2 lg:col-start-2">
             {/* Label: right edge = right of "Yevhenii", baseline = baseline of "Tretyak" (one line below) */}
             <span aria-hidden className="display relative block w-fit text-[7.2rem] uppercase max-sm:text-[3.9rem] sm:max-lg:text-[8rem]">
               <S group="intro">Yevhenii</S>
