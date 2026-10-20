@@ -66,11 +66,6 @@ const SHAPES: Record<string, Shape> = {
     return false;
   },
   ai: (x, y) => star4(0.4, 0.58, 0.38)(x, y) || star4(0.8, 0.2, 0.17)(x, y) || star4(0.8, 0.82, 0.1)(x, y),
-  logo: (x, y) => {
-    const inSquare = roundedCell(0, 0, [])(x, y) && Math.hypot(Math.max(0, Math.abs(x - 0.5) - 0.32), Math.max(0, Math.abs(y - 0.5) - 0.32)) < 0.18;
-    const inT = (y > 0.24 && y < 0.36 && x > 0.24 && x < 0.76) || (x > 0.44 && x < 0.56 && y > 0.24 && y < 0.78);
-    return inSquare && !inT;
-  },
 };
 
 export type IconName = keyof typeof SHAPES;

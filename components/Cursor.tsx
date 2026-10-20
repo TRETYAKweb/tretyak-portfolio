@@ -98,7 +98,7 @@ export default function Cursor() {
             r="18"
             fill="none"
             strokeWidth="1"
-            className="stroke-white/25 transition-[stroke] duration-500 in-data-[stage=accent]:stroke-black/20"
+            className="stroke-white/25 transition-[stroke] duration-500 in-data-[stage=accent]:stroke-black/20 [html:has([data-card]:hover)_&]:stroke-accent-600/30 [html:has([data-card]:hover)_&]:duration-200"
           />
           <circle
             ref={arcRef}
@@ -110,7 +110,7 @@ export default function Cursor() {
             pathLength={1}
             strokeDasharray="1"
             strokeDashoffset="1"
-            className="stroke-accent-600 transition-[stroke] duration-500 in-data-[stage=accent]:stroke-black"
+            className="stroke-accent-600 transition-[stroke] duration-500 in-data-[stage=accent]:stroke-black [html:has([data-card]:hover)_&]:stroke-accent-600 [html:has([data-card]:hover)_&]:duration-200"
           />
         </svg>
       </div>
