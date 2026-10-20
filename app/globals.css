@@ -27,6 +27,16 @@
   --color-border-300: #383838;
 
   --font-sans: var(--font-manrope), sans-serif;
+
+  /* Small text never drops below 12px, whatever the fluid root does */
+  --text-label: max(12px, 0.72rem);
+  --text-ui: max(12px, 0.8rem);
+  --text-note: max(12px, 0.7rem);
+
+  /* Breakpoints sit on the seams of the fluid root curve (see below):
+     < sm = mobile canvas (390), sm…lg = tablet canvas (840), ≥ lg = desktop canvas (1440) */
+  --breakpoint-sm: 30rem;
+  --breakpoint-lg: 62rem;
 }
 
 :root {
@@ -51,7 +61,7 @@
   --btn-bg: rgb(255 255 255 / 0.1);
   --btn-bg-hover: var(--color-accent-950);
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 479px) {
   :root { --spacing-gutter: 1.1rem; }
 }
 html {
@@ -95,7 +105,7 @@ body {
   background: var(--color-black);
   color: var(--color-white);
   font-family: var(--font-sans);
-  font-size: 0.94rem;
+  font-size: max(12px, 0.94rem);
   font-weight: 500;
   line-height: 138%;
 }
@@ -128,7 +138,7 @@ html.lenis body {
 
   /* Small uppercase meta labels */
   .label {
-    font-size: 0.72rem;
+    font-size: var(--text-label);
     font-weight: 500;
     letter-spacing: 0.16em;
     line-height: 1.4;

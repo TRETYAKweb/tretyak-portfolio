@@ -79,7 +79,7 @@ export default function Stats() {
             data-card
             className={`cut-card relative flex min-h-[11rem] flex-col justify-between bg-black/[0.09] p-4 pl-6 ${card.area}`}
           >
-            <h2 className="self-end text-right text-[0.8rem] font-bold tracking-[0.14em] uppercase">
+            <h2 className="self-end text-right text-ui font-bold tracking-[0.14em] uppercase">
               <span data-scr data-text={card.label}>
                 {card.label}
               </span>
@@ -95,7 +95,7 @@ export default function Stats() {
               <div className="flex items-end justify-between gap-3">
                 <DotIcon name={card.icon} className="size-[5.4rem] text-black/80" />
                 {card.note && (
-                  <p className="max-w-[9rem] text-right text-[0.7rem] leading-snug font-semibold text-black/60 uppercase">
+                  <p className="max-w-[9rem] text-right text-note leading-snug font-semibold text-black/60 uppercase">
                     {card.note}
                   </p>
                 )}

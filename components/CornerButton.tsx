@@ -49,7 +49,7 @@ export default function CornerButton({ children, className = "", ...props }: Com
       type="button"
       onMouseEnter={onEnter}
       onMouseLeave={onLeave}
-      className={`group relative cursor-pointer px-5 py-2.5 text-[0.8rem] font-semibold tracking-wider uppercase [-webkit-tap-highlight-color:transparent] ${className}`}
+      className={`group relative cursor-pointer px-5 py-2.5 text-ui font-semibold tracking-wider uppercase [-webkit-tap-highlight-color:transparent] ${className}`}
       {...props}
     >
       <span className="absolute inset-0 bg-(--btn-bg) backdrop-blur-sm transition-colors duration-200 group-hover:bg-(--btn-bg-hover) group-hover:duration-150" />

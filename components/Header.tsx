@@ -15,7 +15,7 @@ export default function Header() {
     <>
       <header className="container-x fixed inset-x-0 top-0 z-50 text-(--fg) transition-colors duration-500">
         <div className="grid grid-cols-2 items-start pt-6 md:grid-cols-5">
-          <a href="#top" className="flex items-center gap-2 text-[0.8rem] font-bold tracking-tight uppercase">
+          <a href="#top" className="flex items-center gap-2 text-ui font-bold tracking-tight whitespace-nowrap uppercase">
             {/* Orange keycap on dark, black keycap on the accent stage */}
             <span className="relative size-[2.2rem]">
               <Image

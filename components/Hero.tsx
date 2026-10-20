@@ -89,7 +89,7 @@ export default function Hero() {
     const arrow = section.querySelector<HTMLElement>("[data-quote-arrow]");
     const fades = section.querySelectorAll<HTMLElement>("[data-fade]");
     const hint = section.querySelector<HTMLElement>("[data-scroll-hint]");
-    const mobile = window.matchMedia("(max-width: 767px)");
+    const narrow = window.matchMedia("(max-width: 991px)");
     const state = { intro: reduced ? 1 : 0, scroll: 0 };
 
     const render = () => {
@@ -117,8 +117,8 @@ export default function Hero() {
       stagger(groups.quote, 0.42, 0.12, 0.1, p);
       if (arrow) arrow.style.opacity = p > 0.47 ? "1" : "0";
 
-      // On mobile the manifesto sits on top of the face — dim the photo behind it
-      if (portraitWrap.current && mobile.matches)
+      // Below desktop the manifesto sits on top of the face — dim the photo behind it
+      if (portraitWrap.current && narrow.matches)
         portraitWrap.current.style.opacity = String(1 - 0.65 * range(p, 0.1, 0.18));
       pixels.current?.setProgress(range(p, 0.7, 0.97));
 
@@ -190,13 +190,13 @@ export default function Hero() {
         <div ref={portraitWrap} className="absolute inset-0">
           <PortraitCanvas
             ref={portrait}
-            className="absolute bottom-0 left-[38%] h-[86%] w-[48%] mask-[linear-gradient(to_bottom,black_70%,transparent_98%)] max-md:left-0 max-md:h-[70%] max-md:w-full max-md:opacity-70"
+            className="absolute bottom-0 left-[38%] h-[86%] w-[48%] mask-[linear-gradient(to_bottom,black_70%,transparent_98%)] max-sm:left-0 max-sm:h-[70%] max-sm:w-full max-sm:opacity-70 sm:max-lg:left-[22%] sm:max-lg:h-[78%] sm:max-lg:w-[78%]"
           />
         </div>
 
-        <div className="container-x absolute inset-0 grid grid-cols-2 content-start md:grid-cols-5">
+        <div className="container-x absolute inset-0 grid grid-cols-2 content-start lg:grid-cols-5">
           {/* Contacts */}
-          <div data-fade className="col-span-2 mt-[6.9rem] self-start border-l-2 border-accent-600 pl-4 max-md:mt-[5.5rem]">
+          <div data-fade className="col-span-2 mt-[6.9rem] self-start border-l-2 border-accent-600 pl-4 max-sm:mt-[5.5rem] sm:max-lg:col-span-1 sm:max-lg:whitespace-nowrap">
             <a href="mailto:tretyakbro@gmail.com" className="label block text-dark-800 transition-colors hover:text-white">
               <S group="intro">tretyakbro@gmail.com</S>
             </a>
@@ -211,17 +211,17 @@ export default function Hero() {
           </div>
 
           {/* From UA */}
-          <div className="col-start-5 mt-[6.9rem] flex items-start justify-between max-md:hidden">
+          <div className="col-start-5 mt-[6.9rem] flex items-start justify-between max-sm:hidden sm:max-lg:col-start-2 sm:max-lg:justify-end sm:max-lg:gap-4">
             <span className="label text-dark-800">
               <S group="intro">From</S>
             </span>
-            <span className="display -mt-2 text-[5.2rem]">
+            <span className="display -mt-2 text-[5.2rem] sm:max-lg:text-[4.5rem]">
               <S group="intro">UA</S>
             </span>
           </div>
 
           {/* Bio */}
-          <p className="col-span-2 row-start-2 mt-[5rem] indent-[50%] text-[1.15rem] leading-[1.45] text-dark-800 max-md:mt-8 max-md:indent-0 max-md:text-base">
+          <p className="col-span-2 row-start-2 mt-[5rem] indent-[50%] text-[1.15rem] leading-[1.45] text-dark-800 max-sm:mt-8 max-sm:indent-0 max-sm:text-base sm:max-lg:mt-12 sm:max-lg:w-[75%] sm:max-lg:indent-[33%] sm:max-lg:text-[1.35rem]">
             <S group="intro">I design interfaces people </S>
             <S group="intro" className="text-accent-600 italic">
               enjoy
@@ -235,37 +235,37 @@ export default function Hero() {
         </div>
 
         {/* Name */}
-        <div className="container-x absolute inset-x-0 bottom-[5vh] grid grid-cols-2 md:grid-cols-5">
+        <div className="container-x absolute inset-x-0 bottom-[5vh] grid grid-cols-2 lg:grid-cols-5">
           {/* Tag: top edge = top of "Yevhenii", left edge = left of "Tretyak" */}
-          <div className="col-span-1 self-start md:mt-[0.75rem] max-md:col-span-2 max-md:pb-4">
-            <span data-fade className="tag inline-block bg-accent-600 px-3 py-1.5 text-[0.72rem] font-bold tracking-[0.14em] text-black uppercase">
+          <div className="col-span-1 self-start max-lg:col-span-2 max-lg:pb-4 lg:mt-[0.75rem]">
+            <span data-fade className="tag inline-block bg-accent-600 px-3 py-1.5 text-label font-bold tracking-[0.14em] text-black uppercase">
               <S group="intro" tint="dark">
                 UI/UX Designer & Webflow Dev
               </S>
             </span>
           </div>
           <h1 className="sr-only">Yevhenii Tretyak — UI/UX Designer & Webflow Developer</h1>
-          <div className="col-span-4 max-md:col-span-2">
+          <div className="col-span-4 max-lg:col-span-2">
             {/* Label: right edge = right of "Yevhenii", baseline = baseline of "Tretyak" (one line below) */}
-            <span aria-hidden className="display relative block w-fit text-[7.2rem] uppercase max-md:text-[3.9rem]">
+            <span aria-hidden className="display relative block w-fit text-[7.2rem] uppercase max-sm:text-[3.9rem] sm:max-lg:text-[8rem]">
               <S group="intro">Yevhenii</S>
-              <span className="label absolute right-0 -bottom-[6.18rem] text-dark-800 max-md:hidden">
+              <span className="label absolute right-0 -bottom-[6.18rem] text-dark-800 max-lg:hidden">
                 <S group="intro">Who ships in Webflow</S>
               </span>
             </span>
           </div>
-          <span aria-hidden className="display col-span-3 self-baseline text-[7.2rem] uppercase max-md:col-span-2 max-md:text-[3.9rem]">
+          <span aria-hidden className="display col-span-3 self-baseline text-[7.2rem] uppercase max-lg:col-span-2 max-sm:text-[3.9rem] sm:max-lg:text-[8rem]">
             <S group="intro">Tretyak</S>
           </span>
           {/* Year: left edge = grid line under "Kyiv, UA", baseline = baseline of "Tretyak" */}
-          <span aria-hidden className="display col-start-4 self-baseline text-[2.4rem] max-md:hidden">
+          <span aria-hidden className="display col-start-4 self-baseline text-[2.4rem] max-lg:hidden">
             <S group="intro">96’</S>
           </span>
         </div>
 
         {/* Manifesto */}
-        <div className="container-x pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 max-md:top-[42%]">
-          <p className="display w-[calc(40%+1px)] text-[3.45rem] uppercase max-md:w-full max-md:text-[1.95rem]">
+        <div className="container-x pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 max-sm:top-[42%] sm:max-lg:top-[45%]">
+          <p className="display w-[calc(40%+1px)] text-[3.45rem] uppercase max-sm:w-full max-sm:text-[1.95rem] sm:max-lg:w-[76%] sm:max-lg:text-[3.6rem]">
             {MANIFESTO.map((line, i) => (
               <span key={i} className={`flex justify-between gap-[0.3em] ${line.indent ? "pl-[18%]" : ""}`}>
                 {line.words.map((word) => (
@@ -279,8 +279,8 @@ export default function Hero() {
         </div>
 
         {/* Quote */}
-        <div className="container-x pointer-events-none absolute inset-x-0 bottom-[6vh] flex justify-end max-md:bottom-[8vh]">
-          <p className="display flex items-end gap-[0.25em] text-[3.45rem] whitespace-nowrap uppercase max-md:text-[1.75rem]">
+        <div className="container-x pointer-events-none absolute inset-x-0 bottom-[6vh] flex justify-end max-sm:bottom-[8vh] sm:max-lg:bottom-[7vh]">
+          <p className="display flex items-end gap-[0.25em] text-[3.45rem] whitespace-nowrap uppercase max-sm:text-[1.75rem] sm:max-lg:text-[3rem]">
             <S group="quote">“Just one</S>
             <span data-quote-arrow className="mb-[0.08em] opacity-0">
               <S group="quote" className="sr-only">
@@ -298,7 +298,7 @@ export default function Hero() {
         </div>
 
         {/* Scroll hint */}
-        <div data-scroll-hint className="container-x pointer-events-none absolute right-0 bottom-[5vh] flex flex-col items-center gap-3 max-md:hidden">
+        <div data-scroll-hint className="container-x pointer-events-none absolute right-0 bottom-[5vh] flex flex-col items-center gap-3 max-sm:hidden">
           <span className="label text-dark-700 [writing-mode:vertical-rl]">
             <S group="intro">Scroll down</S>
           </span>
