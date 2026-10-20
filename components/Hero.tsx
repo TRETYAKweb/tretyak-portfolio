@@ -241,12 +241,16 @@ export default function Hero() {
 
         {/* Name */}
         <div className="container-x absolute inset-x-0 bottom-[5vh] grid grid-cols-2 lg:grid-cols-5">
-          {/* Tag: top edge = top of "Yevhenii", left edge = left of "Tretyak".
-              Below 1350 the 12px floor no longer fits it in one column with a gap, so it moves above "Yevhenii" */}
-          <div className="col-span-1 self-start max-[1349px]:col-span-full max-[1349px]:pb-4 min-[1350px]:mt-[0.75rem]">
+          {/* Tag: top edge = top of "Yevhenii", left edge = left of "Tretyak"; on tablet/mobile it sits above "Yevhenii".
+              Below 1400 the 12px floor no longer fits it in one column with a gap, so it breaks into two lines */}
+          <div className="col-span-1 mt-[0.75rem] self-start pr-4 max-lg:col-span-full max-lg:mt-0 max-lg:pr-0 max-lg:pb-4">
             <span data-fade className="tag inline-block bg-accent-600 px-2.5 py-1.5 text-label font-bold tracking-[0.1em] whitespace-nowrap text-black uppercase">
               <S group="intro" tint="dark">
-                UI/UX Designer & Webflow Dev
+                UI/UX Designer &
+              </S>{" "}
+              <br className="max-lg:hidden min-[1400px]:hidden" />
+              <S group="intro" tint="dark">
+                Webflow Dev
               </S>
             </span>
           </div>
