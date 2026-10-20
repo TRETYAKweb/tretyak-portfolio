@@ -17,7 +17,7 @@ export default function Header() {
         <div className="grid grid-cols-2 items-start pt-6 md:grid-cols-5">
           <a href="#top" className="flex items-center gap-2 text-ui font-bold tracking-tight whitespace-nowrap uppercase">
             {/* Orange keycap on dark, black keycap on the accent stage */}
-            <span className="relative size-[2.2rem]">
+            <span className="relative size-[2.2rem] shrink-0">
               <Image
                 src="/img/logo.png"
                 alt=""
