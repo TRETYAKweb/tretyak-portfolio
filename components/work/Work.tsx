@@ -16,7 +16,7 @@ gsap.registerPlugin(ScrollTrigger);
 const RAIL = "(min-width: 62rem) and (prefers-reduced-motion: no-preference)";
 
 // Timing measured on curtisdesignr.me (all in viewport widths)
-/** The work enters from this far right while Stats leaves by one viewport */
+/** The work enters from this far right while Stats (with the guide lines) leaves by the same distance */
 const HANDOFF = 1.34;
 /** The exit (and the black cells) starts once the box's right edge reaches this point */
 const EXIT_AT = 0.75;
@@ -76,12 +76,20 @@ export default function Work() {
     // Below desktop (or with reduced motion): a plain stacked section
     mm.add(`not all and ${RAIL}`, () => {
       const play = ScrollTrigger.create({ trigger: section, start: "top 70%", once: true, onEnter: () => intro.play() });
-      // Black next section under the header → dark stage
+      // Stats + Work (accent) under the header → accent stage, the black next section → dark.
+      // Synced on refresh too: landing mid-way (resize from desktop, reload) crosses no edge.
+      // Before the wrapper the stage belongs to Hero.
+      const sync = (self: ScrollTrigger) => {
+        if (self.progress >= 1) root.dataset.stage = "";
+        else if (self.progress > 0) root.dataset.stage = "accent";
+      };
       const stage = ScrollTrigger.create({
-        trigger: section,
-        start: "bottom top+=40",
-        onEnter: () => (root.dataset.stage = ""),
-        onLeaveBack: () => (root.dataset.stage = "accent"),
+        trigger: section.parentElement,
+        start: "top top",
+        endTrigger: section,
+        end: "bottom top+=40",
+        onToggle: sync,
+        onRefresh: sync,
       });
       return () => {
         play.kill();
@@ -95,6 +103,7 @@ export default function Work() {
       const box = boxRef.current!;
       const diamond = diamondRef.current!;
       const stats = document.querySelector<HTMLElement>("[data-handoff]");
+      const guides = document.querySelector<HTMLElement>("[data-guides]");
       const paths = [...tracesRef.current!.querySelectorAll("path")].map((el) => {
         const len = el.getTotalLength();
         // x along the path (it never goes left), to find how much of it lies left of the tip
@@ -134,7 +143,7 @@ export default function Work() {
         const t3 = (handoff + pan + approach) / total;
         const t4 = (handoff + pan + approach + exit) / total;
 
-        // Handoff: Stats leaves by one viewport, the work comes in from 1.34 (eased, after a 6% pause)
+        // Handoff: Stats leaves and the work comes in at the same speed, by 1.34 viewports (eased, after a 6% pause)
         const h = easeInOutQuad(Math.max(0, (range(p, 0, t1) - 0.06) / 0.94));
         if (h >= 0.3 && !introPlayed) {
           introPlayed = true;
@@ -145,7 +154,10 @@ export default function Work() {
         const shift = -(pan * range(p, t1, t2) + approach * range(p, t2, t3) + EXIT_AT * vw * out);
         const x = enter + shift;
         rail.style.transform = `translate3d(${x}px, 0, 0)`;
-        if (stats) stats.style.transform = h ? `translate3d(${-Math.round(h * vw)}px, 0, 0)` : "";
+        const leave = h ? `translate3d(${-Math.round(h * vw * HANDOFF)}px, 0, 0)` : "";
+        if (stats) stats.style.transform = leave;
+        // The guide lines belong to Stats here (as on the reference); they come back on the black
+        if (guides) guides.style.transform = out < 0.5 ? leave : "";
 
         // Traces grow up to TIP_AT of the screen
         const boxX = d.boxLeft + x;
@@ -166,8 +178,8 @@ export default function Work() {
         }
 
         pixels.current?.setProgress(out);
-        // The traces replace the guide lines while the rail is on screen
-        if (h > 0.5 && out < 0.5) root.dataset.grid = "off";
+        // Once the guide lines are off screen they stay hidden: the traces replace them
+        if (h >= 1 && out < 0.5) root.dataset.grid = "off";
         else delete root.dataset.grid;
         // Before the pin the stage belongs to Hero / Stats
         if (p > 0) root.dataset.stage = out >= 0.5 ? "" : "accent";
@@ -193,6 +205,7 @@ export default function Work() {
         section.style.height = "";
         rail.style.transform = "";
         if (stats) stats.style.transform = "";
+        if (guides) guides.style.transform = "";
         gsap.set(diamond, { clearProps: "transform" });
         paths.forEach(({ el }) => {
           el.style.strokeDasharray = "";

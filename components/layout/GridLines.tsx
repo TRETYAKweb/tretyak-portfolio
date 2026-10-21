@@ -37,10 +37,12 @@ export default function GridLines() {
   }, []);
 
   return (
-    // Hidden while Selected Work's traces are on screen (`data-grid="off"` on <html>)
+    // Slides out with Stats during Selected Work's handoff (`data-guides`),
+    // then stays hidden while the traces are on screen (`data-grid="off"` on <html>)
     <div
       ref={rootRef}
       aria-hidden
+      data-guides
       className="container-x pointer-events-none fixed inset-0 z-30 transition-opacity duration-500 in-data-[grid=off]:opacity-0"
     >
       <div className="relative h-full">
