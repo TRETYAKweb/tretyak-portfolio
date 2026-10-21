@@ -144,7 +144,9 @@ export default function Hero() {
         portraitWrap.current.style.opacity = String(1 - 0.65 * range(p, 0.1, 0.18));
       pixels.current?.setProgress(range(p, 0.7, 0.97));
 
-      document.documentElement.dataset.stage = p > 0.9 ? "accent" : "";
+      // Past the Hero the stage belongs to the sections below: the manifesto tween can still
+      // call render() for a second after a fast scroll and must not repaint the header
+      if (p < 1) document.documentElement.dataset.stage = p > 0.9 ? "accent" : "";
     };
 
     render();
@@ -198,6 +200,8 @@ export default function Hero() {
         state.scroll = self.progress;
         render();
       },
+      // Stats (accent) comes next; sections further down set their own stage after this
+      onLeave: () => (document.documentElement.dataset.stage = "accent"),
     });
 
     return () => {
