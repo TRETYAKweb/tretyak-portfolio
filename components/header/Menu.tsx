@@ -2,25 +2,17 @@
 
 import { useEffect, useRef, type MouseEvent, type RefObject } from "react";
 import { gsap } from "gsap";
+import ArrowLink from "@/components/ui/ArrowLink";
 import CornerButton from "@/components/ui/CornerButton";
 import KyivClock from "@/components/header/KyivClock";
 import { getLenis } from "@/lib/lenis";
-import { createScrambler, type Scrambler } from "@/lib/scramble";
+import { SOCIALS } from "@/content/socials";
 
 /** Landing anchors; sections get these ids as they're built */
 const NAV = [
   { label: "About", href: "#about" },
   { label: "Work", href: "#work" },
   { label: "Contact", href: "#contact" },
-];
-
-const SOCIALS = [
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/e-tretyak/" },
-  { label: "Instagram", href: "https://www.instagram.com/tretyak_bro/" },
-  { label: "Behance", href: "https://www.behance.net/tretyak_design" },
-  { label: "Dribbble", href: "https://dribbble.com/tretyak_design" },
-  { label: "GitHub", href: "https://github.com/TRETYAKweb" },
-  { label: "Telegram", href: "https://t.me/tretyak_bro" },
 ];
 
 const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -82,69 +74,18 @@ function NavItem({ label, href, onNavigate }: { label: string; href: string; onN
   );
 }
 
-/** Diagonal arrow; on hover one copy flies out top-right while another flies in from bottom-left */
-function Arrow() {
-  const path = (
-    <>
-      <path d="M0.707107 6.875L7.08211 0.5L6.93071 0.651425" stroke="currentColor" strokeLinecap="square" />
-      <path d="M3.58205 0.5H7.08205V4" stroke="currentColor" strokeLinecap="square" />
-    </>
-  );
-  return (
-    <span className="relative inline-block size-2 shrink-0 overflow-hidden text-accent-600">
-      <svg viewBox="0 0 7.58 7.58" fill="none" aria-hidden className="absolute inset-0 size-full transition-transform duration-300 ease-out group-hover:translate-x-full group-hover:-translate-y-full">
-        {path}
-      </svg>
-      <svg viewBox="0 0 7.58 7.58" fill="none" aria-hidden className="absolute inset-0 size-full -translate-x-full translate-y-full transition-transform duration-300 ease-out group-hover:translate-0">
-        {path}
-      </svg>
-    </span>
-  );
-}
-
 function SocialLink({ label, href, index }: { label: string; href: string; index: number }) {
-  const text = useRef<HTMLSpanElement>(null);
-  const scrambler = useRef<Scrambler | null>(null);
-  const tween = useRef<gsap.core.Tween | null>(null);
-
-  useEffect(() => {
-    if (text.current) scrambler.current = createScrambler(text.current, { solid: true });
-    return () => {
-      tween.current?.kill();
-    };
-  }, [label]);
-
-  const onEnter = () => {
-    const s = scrambler.current;
-    if (!s || reducedMotion()) return;
-    const state = { p: 0 };
-    tween.current?.kill();
-    tween.current = gsap.to(state, { p: 1, duration: 0.35, ease: "none", onUpdate: () => s.set(state.p) });
-  };
-  const onLeave = () => {
-    tween.current?.kill();
-    scrambler.current?.set(1);
-  };
-
   return (
     <div className="group/row flex items-center gap-5 max-md:gap-3">
       <span className="label shrink-0 text-accent-600 tabular-nums opacity-20 transition-opacity duration-300 ease-out group-hover/row:opacity-100">
         {String(index + 1).padStart(2, "0")}
       </span>
-      <a
+      <ArrowLink
+        label={label}
         href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        onMouseEnter={onEnter}
-        onMouseLeave={onLeave}
-        className="group label flex min-w-0 flex-1 items-center justify-between gap-1 text-dark-700 transition-colors duration-300 hover:text-white"
-      >
-        {/* Not a click target: the scramble swaps its nodes mid-click (see CornerButton) */}
-        <span ref={text} className="pointer-events-none">
-          {label}
-        </span>
-        <Arrow />
-      </a>
+        className="label min-w-0 flex-1 text-dark-700 hover:text-white"
+        arrowClassName="text-accent-600"
+      />
     </div>
   );
 }
