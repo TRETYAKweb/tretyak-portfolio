@@ -82,7 +82,7 @@ export default function WorkCard({ work, gl: glWanted }: { work: Work; gl: boole
           />
           {gl && <WorkPreview src={src} onFail={onGlFail} />}
         </div>
-        <span className="absolute bottom-[0.95rem] left-4 bg-black px-2 py-[0.44rem] text-label leading-none font-semibold tracking-[0.13em] text-accent-600 uppercase max-sm:bottom-3 max-sm:left-3">
+        <span className="absolute top-[0.95rem] left-4 bg-black px-2 py-[0.44rem] text-label leading-none font-semibold tracking-[0.13em] text-accent-600 uppercase max-sm:top-3 max-sm:left-3">
           {work.tag}
         </span>
         {PLUS.map((pos) => (
@@ -95,7 +95,10 @@ export default function WorkCard({ work, gl: glWanted }: { work: Work; gl: boole
       <div className="flex w-full items-baseline justify-between gap-3">
         {/* On the rail the name scales with the box, like the cards (12px floor) */}
         <h3 className="text-[1.25rem] leading-none font-medium whitespace-nowrap uppercase max-sm:text-[1.05rem] sm:max-lg:text-[max(12px,1.15rem)] rail:text-[max(12px,calc(20*var(--u)))]">
-          {work.title}
+          {/* The cover is the focusable link; this one is for the mouse only */}
+          <a {...link} tabIndex={-1}>
+            {work.title}
+          </a>
         </h3>
         <a
           {...link}
