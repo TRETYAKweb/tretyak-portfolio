@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useImperativeHandle, useRef } from "react";
+import { createPortraitSmear, type PortraitSmear } from "./portraitSmear";
 
 export type PortraitHandle = {
   /** 0 = clean RGB mask, 1 = full RGB split + slice glitch */
@@ -91,6 +92,8 @@ export default function PortraitCanvas({
   className?: string;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const smearRef = useRef<HTMLCanvasElement>(null);
+  const smear = useRef<PortraitSmear | null>(null);
   const caches = useRef<Caches | null>(null);
   const glitch = useRef(0);
 
@@ -101,6 +104,7 @@ export default function PortraitCanvas({
     const ctx = canvas.getContext("2d")!;
     const { width: w, height: h } = canvas;
     const g = glitch.current;
+    smear.current?.sourceChanged();
 
     ctx.globalCompositeOperation = "source-over";
     ctx.clearRect(0, 0, w, h);
@@ -140,6 +144,7 @@ export default function PortraitCanvas({
     const img = new Image();
     img.src = SRC;
     let disposed = false;
+    smear.current = createPortraitSmear(canvas, smearRef.current!);
 
     const build = () => {
       if (disposed || !img.complete || !img.naturalWidth) return;
@@ -148,6 +153,7 @@ export default function PortraitCanvas({
       canvas.width = Math.max(1, Math.round(rect.width * dpr));
       canvas.height = Math.max(1, Math.round(rect.height * dpr));
       caches.current = buildCaches(img, canvas.width, canvas.height, dpr);
+      smear.current?.resize(canvas.width, canvas.height, rect.width, rect.height, caches.current.step);
       render();
       canvas.style.opacity = "1";
     };
@@ -159,15 +165,21 @@ export default function PortraitCanvas({
     return () => {
       disposed = true;
       ro.disconnect();
+      smear.current?.dispose();
+      smear.current = null;
     };
   }, []);
 
   return (
-    <canvas
-      ref={canvasRef}
-      aria-label="Portrait of Yevhenii Tretyak"
-      role="img"
-      className={`opacity-0 transition-opacity duration-1000 ${className}`}
-    />
+    <div className={className}>
+      <canvas
+        ref={canvasRef}
+        aria-label="Portrait of Yevhenii Tretyak"
+        role="img"
+        className="absolute inset-0 size-full opacity-0 transition-opacity duration-1000"
+      />
+      {/* Hover smear: covers the portrait while the pointer trail is alive (portraitSmear.ts) */}
+      <canvas ref={smearRef} aria-hidden className="pointer-events-none absolute inset-0 size-full opacity-0" />
+    </div>
   );
 }

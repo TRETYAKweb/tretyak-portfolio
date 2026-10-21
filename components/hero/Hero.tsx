@@ -221,7 +221,7 @@ export default function Hero() {
         <div ref={portraitWrap} className="absolute inset-0">
           <PortraitCanvas
             ref={portrait}
-            className="absolute bottom-0 left-[24%] h-[86%] w-[76%] mask-[linear-gradient(to_bottom,black_70%,transparent_98%)] max-sm:left-0 max-sm:h-[70%] max-sm:w-full max-sm:opacity-70 sm:max-lg:left-[22%] sm:max-lg:h-[78%] sm:max-lg:w-[78%]"
+            className="absolute bottom-0 left-[24%] h-[86%] w-[76%] mask-[linear-gradient(to_bottom,black_70%,transparent_98%)] max-sm:left-0 max-sm:h-[70%] max-sm:w-full sm:max-lg:left-[22%] sm:max-lg:h-[78%] sm:max-lg:w-[78%]"
           />
         </div>
 
