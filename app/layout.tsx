@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
-import Boot from "@/components/Boot";
-import InlineScript from "@/components/InlineScript";
-import SmoothScroll from "@/components/SmoothScroll";
+import Boot from "@/components/layout/Boot";
+import InlineScript from "@/components/layout/InlineScript";
+import SmoothScroll from "@/components/layout/SmoothScroll";
 import { BOOT_SCRIPT } from "@/lib/boot";
 import "./globals.css";
 

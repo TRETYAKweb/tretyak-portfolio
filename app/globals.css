@@ -124,7 +124,7 @@ html.lenis body {
   overflow: clip;
 }
 
-/* Boot (components/Boot.tsx): a solid accent cover from the first paint until the reveal
+/* Boot (components/layout/Boot.tsx): a solid accent cover from the first paint until the reveal
    canvas takes over; the preloader only on the session's first visit (`data-preload`) */
 .boot-cover {
   position: fixed;

@@ -1,8 +1,8 @@
-import Header from "@/components/Header";
-import GridLines from "@/components/GridLines";
-import Cursor from "@/components/Cursor";
-import Hero from "@/components/Hero";
-import Stats from "@/components/Stats";
+import Header from "@/components/header/Header";
+import GridLines from "@/components/layout/GridLines";
+import Cursor from "@/components/layout/Cursor";
+import Hero from "@/components/hero/Hero";
+import Stats from "@/components/stats/Stats";
 
 export default function Home() {
   return (

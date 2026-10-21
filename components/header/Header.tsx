@@ -2,9 +2,9 @@
 
 import { useCallback, useRef, useState } from "react";
 import Image from "next/image";
-import CornerButton from "@/components/CornerButton";
-import KyivClock from "@/components/KyivClock";
-import Menu from "@/components/Menu";
+import CornerButton from "@/components/ui/CornerButton";
+import KyivClock from "@/components/header/KyivClock";
+import Menu from "@/components/header/Menu";
 
 export default function Header() {
   const [open, setOpen] = useState(false);

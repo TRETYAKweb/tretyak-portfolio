@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, type MouseEvent, type RefObject } from "react";
 import { gsap } from "gsap";
-import CornerButton from "@/components/CornerButton";
-import KyivClock from "@/components/KyivClock";
+import CornerButton from "@/components/ui/CornerButton";
+import KyivClock from "@/components/header/KyivClock";
 import { getLenis } from "@/lib/lenis";
 import { createScrambler, type Scrambler } from "@/lib/scramble";
 
