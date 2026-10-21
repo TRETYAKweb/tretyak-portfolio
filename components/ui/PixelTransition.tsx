@@ -1,18 +1,28 @@
 "use client";
 
 import { useEffect, useImperativeHandle, useRef } from "react";
+import { cssRgb } from "@/lib/color";
 
 export type PixelHandle = { setProgress: (p: number) => void };
 
-const FILL = "#fd4100"; // accent-600
-const FLASH = "#ffab6d"; // accent-300
-
 type Grid = { size: number; cols: number; rows: number; starts: Float32Array };
 
-/** Covers the viewport with accent squares as progress goes 0 → 1. */
-export default function PixelTransition({ ref }: { ref?: React.Ref<PixelHandle> }) {
+/**
+ * Covers its box with squares as progress goes 0 → 1: each one flashes smaller and lighter,
+ * then fills. Colors are CSS values (theme tokens), accent by default.
+ */
+export default function PixelTransition({
+  ref,
+  fill = "var(--color-accent-600)",
+  flash = "var(--color-accent-300)",
+}: {
+  ref?: React.Ref<PixelHandle>;
+  fill?: string;
+  flash?: string;
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const grid = useRef<Grid | null>(null);
+  const colors = useRef({ fill: "", flash: "" });
   const progress = useRef(0);
 
   const render = () => {
@@ -21,10 +31,11 @@ export default function PixelTransition({ ref }: { ref?: React.Ref<PixelHandle> 
     if (!canvas || !g) return;
     const ctx = canvas.getContext("2d")!;
     const p = progress.current;
+    const { fill, flash } = colors.current;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (p <= 0) return;
     if (p >= 1) {
-      ctx.fillStyle = FILL;
+      ctx.fillStyle = fill;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       return;
     }
@@ -32,7 +43,7 @@ export default function PixelTransition({ ref }: { ref?: React.Ref<PixelHandle> 
       for (let x = 0; x < g.cols; x++) {
         const t = g.starts[y * g.cols + x];
         if (p < t - 0.035) continue;
-        ctx.fillStyle = p < t ? FLASH : FILL;
+        ctx.fillStyle = p < t ? flash : fill;
         const inset = p < t ? g.size * 0.3 : 0;
         ctx.fillRect(x * g.size + inset, y * g.size + inset, g.size - inset * 2, g.size - inset * 2);
       }
@@ -45,6 +56,11 @@ export default function PixelTransition({ ref }: { ref?: React.Ref<PixelHandle> 
       render();
     },
   }));
+
+  useEffect(() => {
+    colors.current = { fill: cssRgb(fill), flash: cssRgb(flash) };
+    render();
+  }, [fill, flash]);
 
   useEffect(() => {
     const canvas = canvasRef.current!;

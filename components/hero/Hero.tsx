@@ -4,9 +4,10 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { whenBooted } from "@/lib/boot";
+import { clamp01, range } from "@/lib/progress";
 import { createScrambler, type Scrambler } from "@/lib/scramble";
+import PixelTransition, { type PixelHandle } from "@/components/ui/PixelTransition";
 import PortraitCanvas, { type PortraitHandle } from "./PortraitCanvas";
-import PixelTransition, { type PixelHandle } from "./PixelTransition";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -52,9 +53,6 @@ const GLITCH_FIRST = 3;
 const MANIFESTO_AT = 0.16;
 const MANIFESTO_IN = 1.6;
 const MANIFESTO_OUT = 0.6;
-
-const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
-const range = (p: number, from: number, to: number) => clamp01((p - from) / (to - from));
 
 function PixelArrow({ className = "" }: { className?: string }) {
   // 7x5 dot-matrix arrow
