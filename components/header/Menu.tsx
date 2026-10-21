@@ -6,13 +6,14 @@ import ArrowLink from "@/components/ui/ArrowLink";
 import CornerButton from "@/components/ui/CornerButton";
 import KyivClock from "@/components/header/KyivClock";
 import { getLenis } from "@/lib/lenis";
+import { scrollToAnchor } from "@/lib/anchor";
 import { SOCIALS } from "@/content/socials";
 
-/** Landing anchors; sections get these ids as they're built */
+/** Landing anchors in page order (lib/anchor.ts) */
 const NAV = [
-  { label: "About", href: "#about" },
+  { label: "About", href: "#stats" },
   { label: "Work", href: "#work" },
-  { label: "Contact", href: "#contact" },
+  { label: "Experience", href: "#experience" },
 ];
 
 const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -167,20 +168,11 @@ export default function Menu({
   const onNavigate = (e: MouseEvent, href: string) => {
     e.preventDefault();
     onClose();
-    const target = document.querySelector<HTMLElement>(href);
-    if (!target) return;
-    // The docked footer is sticky: its box is wherever it sticks, so go to the page end instead
-    const toEnd = target.hasAttribute("data-scroll-end");
+    // Unfreeze right away: a stopped Lenis ignores scrollTo, and the close effect runs only after render
     const lenis = getLenis();
-    if (lenis) {
-      lenis.start();
-      lenis.scrollTo(toEnd ? "bottom" : target, { duration: 1.4 });
-    } else {
-      document.documentElement.style.overflow = "";
-      const behavior = reducedMotion() ? "auto" : "smooth";
-      if (toEnd) window.scrollTo({ top: document.documentElement.scrollHeight, behavior });
-      else target.scrollIntoView({ behavior });
-    }
+    if (lenis) lenis.start();
+    else document.documentElement.style.overflow = "";
+    scrollToAnchor(href);
   };
 
   return (

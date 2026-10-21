@@ -5,6 +5,7 @@ import Image from "next/image";
 import CornerButton from "@/components/ui/CornerButton";
 import KyivClock from "@/components/header/KyivClock";
 import Menu from "@/components/header/Menu";
+import { scrollToAnchor } from "@/lib/anchor";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -15,7 +16,13 @@ export default function Header() {
     <>
       <header className="container-x fixed inset-x-0 top-0 z-50 text-(--fg) transition-colors duration-500">
         <div className="grid grid-cols-2 items-start pt-6 md:grid-cols-5">
-          <a href="#top" className="flex items-center gap-2 text-ui font-bold tracking-tight whitespace-nowrap uppercase">
+          <a
+            href="#top"
+            onClick={(e) => {
+              e.preventDefault();
+              scrollToAnchor("#top");
+            }}
+            className="flex items-center gap-2 text-ui font-bold tracking-tight whitespace-nowrap uppercase">
             {/* Orange keycap on dark, black keycap on the accent stage */}
             <span className="relative size-[2.2rem] shrink-0">
               <Image

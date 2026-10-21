@@ -129,6 +129,8 @@ export default function Work() {
         d.exit = Math.max(vh, EXIT_AT * vw);
         d.total = d.handoff + d.pan + d.approach + d.exit + 0.6 * vh;
         section.style.height = `${vh + d.total}px`;
+        // The menu anchor lands once the rail has fully come in (lib/anchor.ts)
+        section.dataset.scrollOffset = String(Math.round(d.handoff));
       };
       measure();
       ScrollTrigger.addEventListener("refreshInit", measure);
@@ -203,6 +205,7 @@ export default function Work() {
         tween.kill();
         ScrollTrigger.removeEventListener("refreshInit", measure);
         section.style.height = "";
+        delete section.dataset.scrollOffset;
         rail.style.transform = "";
         if (stats) stats.style.transform = "";
         if (guides) guides.style.transform = "";
