@@ -75,9 +75,11 @@ export default function Stats() {
       ref={sectionRef}
       id="stats"
       aria-label="Experience and tools"
-      className="relative bg-accent-600 text-black lg:h-svh"
+      // Desktop: stays put while Selected Work slides in over it (see components/work/Work.tsx)
+      className="relative bg-accent-600 text-black lg:h-svh rail:sticky rail:top-0"
     >
-      <div className="container-x grid h-full grid-cols-2 gap-4 pt-[7.3rem] pb-10 max-sm:gap-3 max-sm:pt-[5.5rem] lg:grid-cols-5 lg:grid-rows-3 lg:gap-0 lg:pb-[2.2rem]">
+      {/* Work moves this sideways during the handoff */}
+      <div data-handoff className="container-x grid h-full grid-cols-2 gap-4 pt-[7.3rem] pb-10 max-sm:gap-3 max-sm:pt-[5.5rem] lg:grid-cols-5 lg:grid-rows-3 lg:gap-0 lg:pb-[2.2rem]">
         {CARDS.map((card) => (
           <article
             key={card.label}

@@ -39,6 +39,14 @@
   --breakpoint-lg: 62rem;
 }
 
+/* Desktop pinned layout where Selected Work runs sideways (components/work/Work.tsx).
+   Reduced motion gets the stacked layout instead, like tablet and mobile */
+@custom-variant rail {
+  @media (min-width: 62rem) and (prefers-reduced-motion: no-preference) {
+    @slot;
+  }
+}
+
 :root {
   --spacing-gutter: 2.91rem;
 }

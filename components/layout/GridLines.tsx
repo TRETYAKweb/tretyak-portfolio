@@ -37,7 +37,12 @@ export default function GridLines() {
   }, []);
 
   return (
-    <div ref={rootRef} aria-hidden className="container-x pointer-events-none fixed inset-0 z-30">
+    // Hidden while Selected Work's traces are on screen (`data-grid="off"` on <html>)
+    <div
+      ref={rootRef}
+      aria-hidden
+      className="container-x pointer-events-none fixed inset-0 z-30 transition-opacity duration-500 in-data-[grid=off]:opacity-0"
+    >
       <div className="relative h-full">
         {/* Desktop: 5 columns */}
         {Array.from({ length: 6 }, (_, i) => (
