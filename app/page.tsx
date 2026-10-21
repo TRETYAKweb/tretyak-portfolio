@@ -4,6 +4,7 @@ import Cursor from "@/components/layout/Cursor";
 import Hero from "@/components/hero/Hero";
 import Stats from "@/components/stats/Stats";
 import Work from "@/components/work/Work";
+import WorkedAt from "@/components/worked-at/WorkedAt";
 
 export default function Home() {
   return (
@@ -18,8 +19,7 @@ export default function Home() {
           <Stats />
           <Work />
         </div>
-        {/* TODO: next section (Worked At); for now just the black it lands on */}
-        <section aria-hidden className="h-svh bg-black" />
+        <WorkedAt />
       </main>
     </>
   );

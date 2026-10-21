@@ -22,12 +22,15 @@ export type Scrambler = {
  */
 export function createScrambler(
   el: HTMLElement,
-  /** `solid`: chars that haven't started yet show a glyph instead of being hidden (hover scramble) */
-  opts: { tints?: string[]; solid?: boolean } = {},
+  /**
+   * `solid`: chars that haven't started yet show a glyph instead of being hidden (hover scramble).
+   * `linear`: chars start left to right (typing) instead of in random order.
+   */
+  opts: { tints?: string[]; solid?: boolean; linear?: boolean } = {},
 ): Scrambler {
   const text = el.dataset.text ?? el.textContent ?? "";
   const chars = [...text];
-  const starts = chars.map(() => Math.random() * (1 - WINDOW));
+  const starts = chars.map((_, i) => (opts.linear ? i / Math.max(1, chars.length - 1) : Math.random()) * (1 - WINDOW));
   const tints = opts.tints ?? TINTS;
   const solid = opts.solid ?? false;
   let last = -1;

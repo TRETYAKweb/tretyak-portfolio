@@ -14,6 +14,9 @@ const MARKERS: Record<number, { top: string; speed: number }[]> = {
   5: [{ top: "68%", speed: -0.03 }],
 };
 
+/** Inner lines step aside while Worked At is on screen (`data-grid-edges` on <html>): they would cross its screen */
+const INNER = "in-data-grid-edges:opacity-0";
+
 /** Fixed 5-column guide grid with small markers, shared by every section. */
 export default function GridLines() {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -50,7 +53,7 @@ export default function GridLines() {
         {Array.from({ length: 6 }, (_, i) => (
           <span
             key={i}
-            className="absolute top-0 h-full w-px bg-(--line) transition-colors duration-500 max-md:hidden"
+            className={`absolute top-0 h-full w-px bg-(--line) transition-[background-color,opacity] duration-500 max-md:hidden ${i % 5 ? INNER : ""}`}
             style={{ left: `${i * 20}%` }}
           >
             {MARKERS[i]?.map(({ top, speed }) => (
@@ -67,7 +70,7 @@ export default function GridLines() {
         {[0, 50, 100].map((left) => (
           <span
             key={left}
-            className="absolute top-0 h-full w-px bg-(--line) transition-colors duration-500 md:hidden"
+            className={`absolute top-0 h-full w-px bg-(--line) transition-[background-color,opacity] duration-500 md:hidden ${left === 50 ? INNER : ""}`}
             style={{ left: `${left}%` }}
           />
         ))}
