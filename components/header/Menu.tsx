@@ -169,13 +169,17 @@ export default function Menu({
     onClose();
     const target = document.querySelector<HTMLElement>(href);
     if (!target) return;
+    // The docked footer is sticky: its box is wherever it sticks, so go to the page end instead
+    const toEnd = target.hasAttribute("data-scroll-end");
     const lenis = getLenis();
     if (lenis) {
       lenis.start();
-      lenis.scrollTo(target, { duration: 1.4 });
+      lenis.scrollTo(toEnd ? "bottom" : target, { duration: 1.4 });
     } else {
       document.documentElement.style.overflow = "";
-      target.scrollIntoView({ behavior: reducedMotion() ? "auto" : "smooth" });
+      const behavior = reducedMotion() ? "auto" : "smooth";
+      if (toEnd) window.scrollTo({ top: document.documentElement.scrollHeight, behavior });
+      else target.scrollIntoView({ behavior });
     }
   };
 

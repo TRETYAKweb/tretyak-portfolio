@@ -91,7 +91,9 @@ html {
   :root { --font-from: 0; --font-to: 16; --vw-from: calc(1 / 100); --vw-to: calc(380 / 100); }
 }
 
-html[data-stage="accent"] {
+/* `.theme-accent` keeps a block orange-themed whatever the stage is (the footer) */
+html[data-stage="accent"],
+.theme-accent {
   --line: rgb(0 0 0 / 0.1);
   --marker: var(--color-black);
   --fg: var(--color-black);

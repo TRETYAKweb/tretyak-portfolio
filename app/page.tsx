@@ -5,6 +5,7 @@ import Hero from "@/components/hero/Hero";
 import Stats from "@/components/stats/Stats";
 import Work from "@/components/work/Work";
 import WorkedAt from "@/components/worked-at/WorkedAt";
+import Footer from "@/components/footer/Footer";
 
 export default function Home() {
   return (
@@ -19,7 +20,11 @@ export default function Home() {
           <Stats />
           <Work />
         </div>
-        <WorkedAt />
+        {/* The footer is docked inside this wrapper: it waits under Worked At, never under the sections above */}
+        <div>
+          <WorkedAt />
+          <Footer />
+        </div>
       </main>
     </>
   );

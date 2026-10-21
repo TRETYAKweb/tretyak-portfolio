@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, type ComponentProps } from "react";
+import { useEffect, useRef, type ComponentProps, type ReactNode } from "react";
 import { gsap } from "gsap";
 import { createScrambler, type Scrambler } from "@/lib/scramble";
 
@@ -16,13 +16,15 @@ type Props = Omit<ComponentProps<"button">, "children"> & {
   children: string;
   /** Renders an external link (new tab) instead of a button */
   href?: string;
+  /** Icon after the label; takes the label's color */
+  trailing?: ReactNode;
 };
 
 /**
  * Bracketed button: hover fills the background, scrambles the label into the accent
  * and pushes the corners out. Colors come from the stage vars (--btn-bg, --fg, --marker).
  */
-export default function CornerButton({ children, className = "", href, ...props }: Props) {
+export default function CornerButton({ children, className = "", href, trailing, ...props }: Props) {
   const label = useRef<HTMLSpanElement>(null);
   const corners = useRef<HTMLSpanElement>(null);
   const scrambler = useRef<Scrambler | null>(null);
@@ -62,6 +64,11 @@ export default function CornerButton({ children, className = "", href, ...props 
       >
         {children}
       </span>
+      {trailing && (
+        <span className="pointer-events-none relative ml-2 inline-block align-[-0.05em] text-(--fg) transition-colors duration-200 group-hover:text-accent-600">
+          {trailing}
+        </span>
+      )}
       <span ref={corners} className="pointer-events-none absolute inset-0">
         {CORNERS.map((pos) => (
           <span

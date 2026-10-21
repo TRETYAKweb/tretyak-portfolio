@@ -77,11 +77,11 @@ export default function Cursor() {
 
   return (
     <>
-      {/* Dot-grid spotlight, dark stage only */}
+      {/* Dot-grid spotlight, dark stage only (and not over the orange footer) */}
       <div
         ref={spotRef}
         aria-hidden
-        className="pointer-events-none fixed top-0 left-0 z-20 size-[18rem] bg-size-[1.6rem_1.6rem] opacity-0 mask-[radial-gradient(circle_closest-side,black,transparent)] in-data-[stage=accent]:hidden"
+        className="pointer-events-none fixed top-0 left-0 z-20 size-[18rem] bg-size-[1.6rem_1.6rem] opacity-0 mask-[radial-gradient(circle_closest-side,black,transparent)] in-data-[stage=accent]:hidden [html:has(.theme-accent:hover)_&]:hidden"
         style={{ backgroundImage: "radial-gradient(circle, var(--dot) 1px, transparent 1.5px)" }}
       />
 
