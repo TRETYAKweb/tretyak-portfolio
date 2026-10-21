@@ -12,11 +12,17 @@ const CORNERS = [
   "bottom-0 left-0 border-b border-l group-hover:-translate-x-[0.19rem] group-hover:translate-y-[0.19rem]",
 ];
 
+type Props = Omit<ComponentProps<"button">, "children"> & {
+  children: string;
+  /** Renders an external link (new tab) instead of a button */
+  href?: string;
+};
+
 /**
  * Bracketed button: hover fills the background, scrambles the label into the accent
  * and pushes the corners out. Colors come from the stage vars (--btn-bg, --fg, --marker).
  */
-export default function CornerButton({ children, className = "", ...props }: ComponentProps<"button"> & { children: string }) {
+export default function CornerButton({ children, className = "", href, ...props }: Props) {
   const label = useRef<HTMLSpanElement>(null);
   const corners = useRef<HTMLSpanElement>(null);
   const scrambler = useRef<Scrambler | null>(null);
@@ -44,18 +50,14 @@ export default function CornerButton({ children, className = "", ...props }: Com
     scrambler.current?.set(1);
   };
 
-  return (
-    <button
-      type="button"
-      onMouseEnter={onEnter}
-      onMouseLeave={onLeave}
-      className={`group relative cursor-pointer px-5 py-2.5 text-ui font-semibold tracking-wider uppercase [-webkit-tap-highlight-color:transparent] ${className}`}
-      {...props}
-    >
+  const classes = `group relative cursor-pointer px-5 py-2.5 text-ui font-semibold tracking-wider uppercase [-webkit-tap-highlight-color:transparent] ${className}`;
+  const inner = (
+    <>
       <span className="absolute inset-0 bg-(--btn-bg) backdrop-blur-sm transition-colors duration-200 group-hover:bg-(--btn-bg-hover) group-hover:duration-150" />
       {/* The scramble rewrites these nodes mid-click; Chrome drops the click if mousedown hit a removed node */}
       <span
         ref={label}
+        data-label
         className="pointer-events-none relative text-(--fg) transition-colors duration-200 group-hover:text-accent-600 group-hover:duration-500 group-hover:ease-linear"
       >
         {children}
@@ -68,6 +70,26 @@ export default function CornerButton({ children, className = "", ...props }: Com
           />
         ))}
       </span>
+    </>
+  );
+
+  if (href)
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        onMouseEnter={onEnter}
+        onMouseLeave={onLeave}
+        className={`inline-block text-center ${classes}`}
+      >
+        {inner}
+      </a>
+    );
+
+  return (
+    <button type="button" onMouseEnter={onEnter} onMouseLeave={onLeave} className={classes} {...props}>
+      {inner}
     </button>
   );
 }
